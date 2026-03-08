@@ -8,6 +8,7 @@ public class ReproductorView extends JFrame {
     private JList<Cancion> lista;
     private DefaultListModel<Cancion> listModel;
     private PanelReproductor panelReproductor;
+    private PanelFavoritos panelFavoritos;
     public ReproductorView() { setTitle("TecWave");
         setSize(900,600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -17,7 +18,9 @@ public class ReproductorView extends JFrame {
         menu.setBackground(negroSpotify);
         menu.add(new JButton("🏠 Inicio"));
         menu.add(new JButton("📚 Biblioteca"));
-        menu.add(new JButton("❤️ Favoritos")); add(menu, BorderLayout.WEST);
+        JButton btnFavoritos = new JButton("❤️ Favoritos");
+        menu.add(btnFavoritos);
+        add(menu, BorderLayout.WEST);
         JPanel centro = new JPanel(new BorderLayout());
         centro.setBackground(grisOscuro);
         listModel = new DefaultListModel<>();
@@ -29,7 +32,9 @@ public class ReproductorView extends JFrame {
                 BorderLayout.CENTER);
                 panelReproductor = new PanelReproductor();
                 add(panelReproductor, BorderLayout.SOUTH);
-                setLocationRelativeTo(null);
+                panelFavoritos = new PanelFavoritos();
+                btnFavoritos.addActionListener(e -> mostrarfav());
+                
                 setVisible(true);
     }
     public JList<Cancion> getLista(){
@@ -41,4 +46,17 @@ public class ReproductorView extends JFrame {
     public void agregarCancion(Cancion c) {
         listModel.addElement(c);
     }
+
+    public PanelFavoritos getPanelFavoritos(){
+        return panelFavoritos;
+    }
+    public void mostrarfav(){
+    listModel.clear();
+    for(Cancion c : panelFavoritos.getFavoritos()){
+        listModel.addElement(c);
+    }
+
+}
+    
+    
 }

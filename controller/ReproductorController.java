@@ -7,6 +7,7 @@ import javax.swing.JFileChooser;
 import model.Cancion;
 import model.ReproductorModel;
 import view.ReproductorView;
+
 public class ReproductorController {
     private ReproductorView view;
     private ReproductorModel model;
@@ -121,15 +122,16 @@ public class ReproductorController {
     private void toggleFavorito() {
 
         int index = view.getPanelReproductor().getLista().getSelectedIndex();
-
         if(index < 0) return;
-
         Cancion c = model.getCanciones().get(index);
-
         if(c.isFavorito()){
             model.quitarFavorito(c);
-        } else {
+            view.getPanelFavoritos().quitarFavorito(c);
+            } else {
             model.agregarFavorito(c);
+            view.getPanelFavoritos().agregarFavorito(c);
         }
+        view.getPanelReproductor().getLista().repaint();
     }
+    
 }

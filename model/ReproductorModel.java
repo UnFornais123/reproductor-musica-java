@@ -21,11 +21,10 @@ public class ReproductorModel {
         return canciones;
     }
 
-    public void agregarFavorito(Cancion c) {
-        if (!favoritos.contains(c)) {
-            favoritos.add(c);
-            c.setFavorito(true);
-        }
+   public void agregarFavorito(Cancion c){
+        c.setFavorito(true);
+    if(!favoritos.contains(c)) favoritos.add(c);
+    
     }
 
     public void quitarFavorito(Cancion c) {
