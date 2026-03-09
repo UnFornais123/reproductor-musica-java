@@ -3,10 +3,10 @@ import java.io.File;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.sound.sampled.*;
-import javax.swing.JFileChooser;
 import model.Cancion;
 import model.ReproductorModel;
 import view.ReproductorView;
+import javax.swing.*;
 
 public class ReproductorController {
     private ReproductorView view;
@@ -14,6 +14,7 @@ public class ReproductorController {
     private Clip clip;
     private int indiceActual = -1;
     private boolean pausado = false;
+    private Timer timerProgreso;
     public ReproductorController(ReproductorView view, ReproductorModel model) {
         this.view = view;
         this.model = model;
@@ -39,6 +40,8 @@ public class ReproductorController {
         view.getPanelReproductor().getBtnNext().addActionListener(e -> siguiente());
         view.getPanelReproductor().getBtnPrev().addActionListener(e -> anterior());
         view.getPanelReproductor().getBtnFavorito().addActionListener(e -> toggleFavorito());
+        view.getPanelReproductor().getSliderVolumen().addChangeListener(e -> ajustarVolumen());
+
     }
 
     private void importarCarpeta() {
@@ -70,11 +73,35 @@ public class ReproductorController {
                 clip.stop();
                 clip.close();
             }
-            AudioInputStream audio =
-                    AudioSystem.getAudioInputStream(archivo);
+
+            AudioInputStream audio = AudioSystem.getAudioInputStream(archivo);
             clip = AudioSystem.getClip();
             clip.open(audio);
+            FloatControl controlVolumen =
+                    (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             clip.start();
+            view.getPanelReproductor().setNombreCancion(cancion.getTitulo());
+
+            // duración total
+            long duracionMicro = clip.getMicrosecondLength();
+            int duracionSeg = (int)(duracionMicro / 1_000_000);
+            view.getPanelReproductor().iniciarDuracion(duracionSeg);
+
+            // uso del tiempo real del audio
+            if(timerProgreso != null){
+                timerProgreso.stop();
+            }
+
+            timerProgreso = new Timer(500, e -> {
+
+                long microActual = clip.getMicrosecondPosition();
+                int segundosActual = (int)(microActual / 1_000_000);
+
+                view.getPanelReproductor().actualizarProgreso(segundosActual);
+
+            });
+
+            timerProgreso.start();
             pausado = false;
             view.getPanelReproductor().getBtnPlay().setText("⏸");
             System.out.println("Reproduciendo: " + archivo.getName());
@@ -82,16 +109,19 @@ public class ReproductorController {
             e.printStackTrace();
         }
     }
+
     private void playPause() {
         if (clip == null) return;
         if (!pausado) {
             clip.stop();
             pausado = true;
             view.getPanelReproductor().getBtnPlay().setText("▶");
+            view.getPanelReproductor().pausarProgreso();
         } else {
             clip.start();
             pausado = false;
             view.getPanelReproductor().getBtnPlay().setText("⏸");
+            view.getPanelReproductor().reanudarProgreso();
         }
     }
 
@@ -133,5 +163,23 @@ public class ReproductorController {
         }
         view.getPanelReproductor().getLista().repaint();
     }
-    
+
+    private void ajustarVolumen() {
+
+        if (clip == null) return;
+
+        JSlider slider = view.getPanelReproductor().getSliderVolumen();
+
+        int valor = slider.getValue(); // 0 - 100
+
+        FloatControl control =
+                (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+
+        float min = control.getMinimum();
+        float max = control.getMaximum();
+
+        float volumen = min + (max - min) * (valor / 100f);
+
+        control.setValue(volumen);
+    }
 }

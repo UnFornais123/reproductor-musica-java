@@ -9,6 +9,11 @@ public class ReproductorView extends JFrame {
     private DefaultListModel<Cancion> listModel;
     private PanelReproductor panelReproductor;
     private PanelFavoritos panelFavoritos;
+    private JButton btnPlay;
+    private JButton btnNext;
+    private JButton btnPrev;
+    private JSlider barraProgreso;
+    private JSlider sliderVolumen;
     public ReproductorView() { setTitle("TecWave");
         setSize(900,600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -34,8 +39,10 @@ public class ReproductorView extends JFrame {
                 add(panelReproductor, BorderLayout.SOUTH);
                 panelFavoritos = new PanelFavoritos();
                 btnFavoritos.addActionListener(e -> mostrarfav());
-                
+
                 setVisible(true);
+
+
     }
     public JList<Cancion> getLista(){
         return lista;
@@ -57,6 +64,6 @@ public class ReproductorView extends JFrame {
     }
 
 }
-    
-    
+
+
 }
