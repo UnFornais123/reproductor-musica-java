@@ -1,69 +1,92 @@
 package view;
+
 import javax.swing.*;
 import java.awt.*;
 import model.Cancion;
+
 public class ReproductorView extends JFrame {
-    Color negroSpotify = new Color(18,18,18);
-    Color grisOscuro = new Color(40,40,40);
-    private JList<Cancion> lista;
-    private DefaultListModel<Cancion> listModel;
+    private Color negroSpotify = new Color(18, 18, 18);
+    private Color grisOscuro = new Color(40, 40, 40);
+
+
     private PanelReproductor panelReproductor;
+    private PanelInicio panelInicio;
     private PanelFavoritos panelFavoritos;
-    private JButton btnPlay;
-    private JButton btnNext;
-    private JButton btnPrev;
-    private JSlider barraProgreso;
-    private JSlider sliderVolumen;
-    public ReproductorView() { setTitle("TecWave");
-        setSize(900,600);
+    private PanelBiblioteca panelBiblioteca;
+
+    private JButton btnInicio;
+    private JButton btnBiblioteca;
+    private JButton btnFavoritos;
+
+    private CardLayout cardLayout;
+    private JPanel panelCentral;
+
+    public ReproductorView() {
+        setTitle("TecWave");
+        setSize(1000, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); 
         setLayout(new BorderLayout());
-        JPanel menu = new JPanel(new GridLayout(5,1,10,10));
-        menu.setPreferredSize(new Dimension(170,0));
+
+        JPanel menu = new JPanel(new GridLayout(6, 1, 10, 10));
+        menu.setPreferredSize(new Dimension(200, 0));
         menu.setBackground(negroSpotify);
-        menu.add(new JButton("🏠 Inicio"));
-        menu.add(new JButton("📚 Biblioteca"));
-        JButton btnFavoritos = new JButton("❤️ Favoritos");
+        menu.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+
+        btnInicio = crearBotonMenu("🏠 Inicio");
+        btnBiblioteca = crearBotonMenu("📚 Biblioteca");
+        btnFavoritos = crearBotonMenu("❤️ Favoritos");
+
+        menu.add(btnInicio);
+        menu.add(btnBiblioteca);
         menu.add(btnFavoritos);
         add(menu, BorderLayout.WEST);
-        JPanel centro = new JPanel(new BorderLayout());
-        centro.setBackground(grisOscuro);
-        listModel = new DefaultListModel<>();
-        lista = new JList<>(listModel);
-        lista.setBackground(grisOscuro);
-        lista.setForeground(Color.WHITE);
-        centro.add(new JScrollPane(lista),
-                BorderLayout.CENTER); add(centro,
-                BorderLayout.CENTER);
-                panelReproductor = new PanelReproductor();
-                add(panelReproductor, BorderLayout.SOUTH);
-                panelFavoritos = new PanelFavoritos();
-                btnFavoritos.addActionListener(e -> mostrarfav());
 
-                setVisible(true);
+        cardLayout = new CardLayout();
+        panelCentral = new JPanel(cardLayout);
+        panelCentral.setBackground(grisOscuro);
+        panelInicio = new PanelInicio();
+        panelBiblioteca = new PanelBiblioteca();
+        panelFavoritos = new PanelFavoritos();
 
+        panelCentral.add(panelInicio, "inicio");
+        panelCentral.add(panelBiblioteca, "biblioteca");
+        panelCentral.add(panelFavoritos, "favoritos");
+        
+        add(panelCentral, BorderLayout.CENTER);
 
+        panelReproductor = new PanelReproductor();
+        add(panelReproductor, BorderLayout.SOUTH);
+
+        btnInicio.addActionListener(e -> mostrarInicio());
+        btnBiblioteca.addActionListener(e -> mostrarBiblioteca());
+        btnFavoritos.addActionListener(e -> mostrarFavoritos());
+        setBackground(grisOscuro);
+        setVisible(true);
     }
-    public JList<Cancion> getLista(){
-        return lista;
+    private JButton crearBotonMenu(String texto) {
+        JButton btn = new JButton(texto);
+        btn.setBackground(grisOscuro);
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        return btn;
     }
-    public PanelReproductor getPanelReproductor(){
-        return panelReproductor;
+    public void mostrarInicio() {
+        cardLayout.show(panelCentral, "inicio");
     }
-    public void agregarCancion(Cancion c) {
-        listModel.addElement(c);
+    public void mostrarBiblioteca() {
+        cardLayout.show(panelCentral, "biblioteca");
     }
-
-    public PanelFavoritos getPanelFavoritos(){
-        return panelFavoritos;
+    public void mostrarFavoritos() {
+        cardLayout.show(panelCentral, "favoritos");
     }
-    public void mostrarfav(){
-    listModel.clear();
-    for(Cancion c : panelFavoritos.getFavoritos()){
-        listModel.addElement(c);
-    }
-
-}
-
-
+    public JButton getBtnInicio() { return btnInicio; }
+    public JButton getBtnBiblioteca() { return btnBiblioteca; }
+    public JButton getBtnFavoritos() { return btnFavoritos; }
+    
+    public PanelInicio getPanelInicio() { return panelInicio; }
+    public PanelBiblioteca getPanelBiblioteca() { return panelBiblioteca; }
+    public PanelFavoritos getPanelFavoritos() { return panelFavoritos; }
+    public PanelReproductor getPanelReproductor() { return panelReproductor; }
 }
