@@ -12,6 +12,7 @@ public class PanelReproductor extends JPanel {
     private JList<Cancion> lista;
     private DefaultListModel<Cancion> listModel;
     private Color negroSpotify = new Color(18, 18, 18);
+
     private Color grisOscuro = new Color(40, 40, 40);
     public PanelReproductor() {
         setLayout(new BorderLayout());
@@ -34,9 +35,9 @@ public class PanelReproductor extends JPanel {
         JPanel panelControles = new JPanel(new BorderLayout());
         panelControles.setBackground(new Color(18, 18, 18));
         lblTiempoActual = new JLabel("00:00");
-        lblTiempoActual.setForeground(negroSpotify);
+        lblTiempoActual.setForeground(Color.WHITE);
         lblTiempoTotal = new JLabel("00:00");
-        lblTiempoTotal.setForeground(negroSpotify);
+        lblTiempoTotal.setForeground(Color.WHITE);
         barraProgreso = new JSlider(0, 100, 0);
         barraProgreso.setBackground(new Color(18, 18, 18));
         barraProgreso.setForeground(new Color(30, 215, 96));

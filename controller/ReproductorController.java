@@ -33,6 +33,7 @@ public class ReproductorController {
         view.getPanelReproductor().getBtnPlay().addActionListener(e -> playPause());
         view.getPanelReproductor().getBtnNext().addActionListener(e -> siguiente());
         view.getPanelReproductor().getBtnPrev().addActionListener(e -> anterior());
+        //FAVORITOS PARA BD
         view.getPanelReproductor().getBtnFavorito().addActionListener(e -> toggleFavorito());
         view.getPanelReproductor().getSliderVolumen().addChangeListener(e -> ajustarVolumen());
 
@@ -76,6 +77,8 @@ public class ReproductorController {
             }
         });
     }
+
+    //PARA BD
     private void importarCarpeta() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -100,11 +103,15 @@ public class ReproductorController {
         indiceActual = index;
         ejecutarAudio(cancion);
     }
+
+    //REPRODUCIR
     private void archivorepro(Cancion cancion) {
         if (cancion == null) return;
         indiceActual = model.getCanciones().indexOf(cancion);
         ejecutarAudio(cancion);
     }
+
+    //METODO PARA FAVORITOS
     private void archivorepro(String seleccionado) {
         String tituloLimpio = seleccionado.replace("❤️ ", "").trim();
         for (Cancion c : model.getCanciones()) {
@@ -182,7 +189,8 @@ public class ReproductorController {
         reproducir(indiceActual);
         view.getPanelReproductor().getLista().setSelectedIndex(indiceActual);
     }
-
+    //METODO QUE PODRIAMOS
+    //IMPLEMENTARLE BD
     private void toggleFavorito() {
         int index = view.getPanelReproductor().getLista().getSelectedIndex();
         if(index < 0) index = view.getPanelInicio().getLista().getSelectedIndex();
